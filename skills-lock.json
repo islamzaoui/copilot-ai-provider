@@ -1,15 +1,25 @@
 {
-  "version": 1,
-  "skills": {
-    "ai-sdk": {
-      "source": "vercel/ai",
-      "sourceType": "github",
-      "computedHash": "58ce68f628890c3925aea2b5435a649251ac182057541045c68fc19a27aaa0ec"
-    },
-    "copilot-sdk": {
-      "source": "github/awesome-copilot",
-      "sourceType": "github",
-      "computedHash": "3265212ec108eb3967ac061bf501d5f019d1e1ffef1d1f043d5346d0e4fa5097"
-    }
-  }
+	"version": 1,
+	"skills": {
+		"ai-sdk": {
+			"source": "vercel/ai",
+			"sourceType": "github",
+			"computedHash": "58ce68f628890c3925aea2b5435a649251ac182057541045c68fc19a27aaa0ec"
+		},
+		"bun-test": {
+			"source": "daleseo/bun-skills",
+			"sourceType": "github",
+			"computedHash": "1b2368cad9b61944aec3781f81d012ba7e6ab31f09fb8f927c6f9d60c979ad0a"
+		},
+		"copilot-sdk": {
+			"source": "github/awesome-copilot",
+			"sourceType": "github",
+			"computedHash": "3265212ec108eb3967ac061bf501d5f019d1e1ffef1d1f043d5346d0e4fa5097"
+		},
+		"hono": {
+			"source": "yusukebe/hono-skill",
+			"sourceType": "github",
+			"computedHash": "c7a4ae9efeb7ef47c6473ee4d636fced825a0c26b25372a49417075f6d566af6"
+		}
+	}
 }
