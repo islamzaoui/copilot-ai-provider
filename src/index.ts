@@ -1,6 +1,7 @@
 import { type LanguageModelV3, NoSuchModelError, type ProviderV3 } from "@ai-sdk/provider";
 import { DEFAULT_MODEL_ID, DEFAULT_PROVIDER_ID } from "./core/constants.js";
 import type { CopilotProvider, CopilotProviderOptions } from "./core/types.js";
+import { CopilotHttpLanguageModel } from "./model/CopilotHttpLanguageModel.js";
 import { CopilotLanguageModel } from "./model/CopilotLanguageModel.js";
 
 export type { CopilotProvider, CopilotProviderOptions } from "./core/types.js";
@@ -11,6 +12,21 @@ export function createCopilotProvider(options: CopilotProviderOptions = {}): Pro
 	return {
 		specificationVersion: "v3",
 		languageModel(modelId: string) {
+			const useHttp = options.transport === "http" || !!options.http?.baseUrl;
+
+			if (useHttp) {
+				if (!options.http?.baseUrl) {
+					throw new Error("Copilot HTTP transport requires options.http.baseUrl.");
+				}
+
+				return new CopilotHttpLanguageModel({
+					providerId,
+					modelId,
+					httpOptions: options.http,
+					sessionConfig: options.sessionConfig,
+				});
+			}
+
 			return new CopilotLanguageModel({
 				providerId,
 				modelId,

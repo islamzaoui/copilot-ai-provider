@@ -3,16 +3,14 @@ import { generateText, Output, stepCountIs, streamText, ToolLoopAgent, tool } fr
 import { z } from "zod";
 import { copilot } from "../src/index.js";
 import {
-	getCopilotClientOptions,
 	getCopilotModel,
+	getCopilotProviderOptions,
 	shouldRunCopilotIntegration,
 } from "./helpers/copilot-test-env.js";
 
 const maybeDescribe = shouldRunCopilotIntegration() ? describe : describe.skip;
 const modelId = getCopilotModel();
-const model = copilot(modelId, {
-	clientOptions: getCopilotClientOptions(),
-});
+const model = copilot(modelId, getCopilotProviderOptions());
 
 setDefaultTimeout(120_000);
 
