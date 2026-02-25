@@ -24,6 +24,8 @@ export class CopilotLanguageModel implements LanguageModelV3 {
 
 	private readonly clientOptions?: CopilotClientOptions;
 	private readonly sessionConfig?: Omit<SessionConfig, "model" | "streaming">;
+	private client?: CopilotClient;
+	private clientStartPromise?: Promise<CopilotClient>;
 
 	constructor(options: {
 		providerId: string;
@@ -37,60 +39,77 @@ export class CopilotLanguageModel implements LanguageModelV3 {
 		this.sessionConfig = options.sessionConfig;
 	}
 
+	private async getClient(): Promise<CopilotClient> {
+		if (this.client) {
+			return this.client;
+		}
+
+		if (!this.clientStartPromise) {
+			this.clientStartPromise = (async () => {
+				const client = new CopilotClient(this.clientOptions);
+				await client.start();
+				this.client = client;
+				return client;
+			})();
+		}
+
+		try {
+			return await this.clientStartPromise;
+		} catch (error) {
+			this.clientStartPromise = undefined;
+			throw error;
+		}
+	}
+
 	async doGenerate(options: LanguageModelV3CallOptions): Promise<LanguageModelV3GenerateResult> {
 		const warnings = getWarnings(options);
 		const callOptions = getCopilotCallOptions(options);
 
-		const client = new CopilotClient(this.clientOptions);
-		await client.start();
+		const client = await this.getClient();
 
 		const usageAccumulator: Partial<LanguageModelV3Usage> = {};
 		let latestTimestamp: Date | undefined;
 
-		try {
-			const session = await client.createSession({
-				...this.sessionConfig,
-				model: callOptions.model ?? this.modelId,
-				streaming: false,
-				reasoningEffort: callOptions.reasoningEffort ?? this.sessionConfig?.reasoningEffort,
-				workingDirectory: callOptions.workingDirectory ?? this.sessionConfig?.workingDirectory,
-				systemMessage: callOptions.systemMessage ?? this.sessionConfig?.systemMessage,
-			});
+		const session = await client.createSession({
+			...this.sessionConfig,
+			model: callOptions.model ?? this.modelId,
+			streaming: false,
+			reasoningEffort: callOptions.reasoningEffort ?? this.sessionConfig?.reasoningEffort,
+			workingDirectory: callOptions.workingDirectory ?? this.sessionConfig?.workingDirectory,
+			systemMessage: callOptions.systemMessage ?? this.sessionConfig?.systemMessage,
+		});
 
-			session.on((event) => {
-				if (event.type === "assistant.usage") {
-					mergeUsageFromEvent(usageAccumulator, event);
-				}
-				if (event.type === "assistant.message" || event.type === "assistant.usage") {
-					latestTimestamp = new Date(event.timestamp);
-				}
-			});
+		session.on((event) => {
+			if (event.type === "assistant.usage") {
+				mergeUsageFromEvent(usageAccumulator, event);
+			}
+			if (event.type === "assistant.message" || event.type === "assistant.usage") {
+				latestTimestamp = new Date(event.timestamp);
+			}
+		});
 
-			const response = await session.sendAndWait({
-				prompt: promptToString(options.prompt),
-			});
+		const response = await session.sendAndWait({
+			prompt: promptToString(options.prompt),
+		});
 
-			const content = mapAssistantMessageToContent(response?.data);
-			const finishReason: LanguageModelV3FinishReason = {
-				unified: response?.data.toolRequests?.length ? "tool-calls" : "stop",
-				raw: response?.data.toolRequests?.length ? "tool_requests" : "session.idle",
-			};
+		const content = mapAssistantMessageToContent(response?.data);
+		const finishReason: LanguageModelV3FinishReason = {
+			unified: response?.data.toolRequests?.length ? "tool-calls" : "stop",
+			raw: response?.data.toolRequests?.length ? "tool_requests" : "session.idle",
+		};
 
-			await session.destroy();
+		await session.destroy();
 
-			return {
-				content,
-				finishReason,
-				usage: normalizeUsage(usageAccumulator),
-				warnings,
-				response: {
-					timestamp: latestTimestamp,
-					modelId: callOptions.model ?? this.modelId,
-				},
-			};
-		} finally {
-			await client.stop();
-		}
+		return {
+			content,
+			finishReason,
+			usage: normalizeUsage(usageAccumulator),
+			warnings,
+			response: {
+				timestamp: latestTimestamp,
+				modelId: callOptions.model ?? this.modelId,
+			},
+		};
 	}
 
 	async doStream(options: LanguageModelV3CallOptions): Promise<LanguageModelV3StreamResult> {
@@ -143,10 +162,6 @@ export class CopilotLanguageModel implements LanguageModelV3 {
 					sessionDestroyed = true;
 				} catch {}
 			}
-
-			if (client) {
-				await client.stop();
-			}
 		};
 
 		const stream = new ReadableStream<LanguageModelV3StreamPart>({
@@ -157,8 +172,7 @@ export class CopilotLanguageModel implements LanguageModelV3 {
 				});
 
 				try {
-					client = new CopilotClient(this.clientOptions);
-					await client.start();
+					client = await this.getClient();
 
 					const session = await client.createSession({
 						...this.sessionConfig,
@@ -262,8 +276,6 @@ export class CopilotLanguageModel implements LanguageModelV3 {
 						await resumed.destroy();
 					} catch {}
 				}
-
-				await client.stop();
 			},
 		});
 

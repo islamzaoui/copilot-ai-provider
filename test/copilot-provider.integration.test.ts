@@ -10,15 +10,16 @@ import {
 
 const maybeDescribe = shouldRunCopilotIntegration() ? describe : describe.skip;
 const modelId = getCopilotModel();
+const model = copilot(modelId, {
+	clientOptions: getCopilotClientOptions(),
+});
 
 setDefaultTimeout(120_000);
 
 maybeDescribe("copilot provider integration", () => {
 	test("generateText with system + prompt", async () => {
 		const result = await generateText({
-			model: copilot(modelId, {
-				clientOptions: getCopilotClientOptions(),
-			}),
+			model,
 			system: "Answer with one short sentence.",
 			prompt: "What is 2 + 2?",
 		});
@@ -30,9 +31,7 @@ maybeDescribe("copilot provider integration", () => {
 
 	test("generateText with messages", async () => {
 		const result = await generateText({
-			model: copilot(modelId, {
-				clientOptions: getCopilotClientOptions(),
-			}),
+			model,
 			messages: [
 				{ role: "system", content: "Be concise." },
 				{ role: "user", content: [{ type: "text", text: "Say hello in two words." }] },
@@ -50,9 +49,7 @@ maybeDescribe("copilot provider integration", () => {
 		});
 
 		const result = await generateText({
-			model: copilot(modelId, {
-				clientOptions: getCopilotClientOptions(),
-			}),
+			model,
 			output: Output.object({ schema }),
 			prompt: 'Return a JSON object with exactly one field: {"language":"TypeScript"}.',
 		});
@@ -62,9 +59,7 @@ maybeDescribe("copilot provider integration", () => {
 
 	test("streamText streams and completes", async () => {
 		const result = streamText({
-			model: copilot(modelId, {
-				clientOptions: getCopilotClientOptions(),
-			}),
+			model,
 			prompt: "Count from 1 to 3 in one line.",
 		});
 
@@ -78,9 +73,7 @@ maybeDescribe("copilot provider integration", () => {
 
 	test("generateText with tools exposes compatibility warning", async () => {
 		const result = await generateText({
-			model: copilot(modelId, {
-				clientOptions: getCopilotClientOptions(),
-			}),
+			model,
 			prompt: "Use the lookupWeather tool to get weather for Paris.",
 			tools: {
 				lookupWeather: tool({
@@ -105,9 +98,7 @@ maybeDescribe("copilot provider integration", () => {
 
 	test("ToolLoopAgent generate smoke test", async () => {
 		const agent = new ToolLoopAgent({
-			model: copilot(modelId, {
-				clientOptions: getCopilotClientOptions(),
-			}),
+			model,
 			tools: {
 				lookupWeather: tool({
 					description: "Return deterministic weather",
