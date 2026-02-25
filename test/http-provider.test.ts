@@ -1,21 +1,44 @@
 import { describe, expect, setDefaultTimeout, test } from "bun:test";
 import { generateText, Output, stepCountIs, streamText, ToolLoopAgent, tool } from "ai";
 import { z } from "zod";
-import { copilot } from "../src/index.js";
-import {
-	getCopilotModel,
-	getCopilotProviderOptions,
-	shouldRunCopilotIntegration,
-} from "./helpers/copilot-test-env.js";
+import { copilotHttp, createCopilotHttpProvider } from "../src/client/http/index.js";
 
-const maybeDescribe = shouldRunCopilotIntegration() ? describe : describe.skip;
-const modelId = getCopilotModel();
-const model = copilot(modelId, getCopilotProviderOptions());
+describe("createCopilotHttpProvider", () => {
+	test("creates an HTTP language model", () => {
+		const provider = createCopilotHttpProvider({
+			http: {
+				baseUrl: "http://localhost:8787",
+			},
+		});
+
+		expect(() => provider.languageModel("gpt-4.1")).not.toThrow();
+	});
+});
+
+const shouldRunCopilotIntegration = process.env.COPILOT_INTEGRATION !== "0";
+const modelId = process.env.COPILOT_MODEL ?? "gpt-4.1";
+const httpBaseUrl = process.env.COPILOT_HTTP_BASE_URL;
+const maybeDescribe = shouldRunCopilotIntegration && httpBaseUrl ? describe : describe.skip;
+
+function getHttpModel() {
+	if (!httpBaseUrl) {
+		throw new Error("HTTP model is not configured for integration tests.");
+	}
+
+	return copilotHttp(modelId, {
+		http: {
+			baseUrl: httpBaseUrl,
+			apiKey: process.env.COPILOT_HTTP_API_KEY,
+		},
+	});
+}
 
 setDefaultTimeout(120_000);
 
-maybeDescribe("copilot provider integration", () => {
+maybeDescribe("copilot http integration", () => {
 	test("generateText with system + prompt", async () => {
+		const model = getHttpModel();
+
 		const result = await generateText({
 			model,
 			system: "Answer with one short sentence.",
@@ -28,6 +51,8 @@ maybeDescribe("copilot provider integration", () => {
 	});
 
 	test("generateText with messages", async () => {
+		const model = getHttpModel();
+
 		const result = await generateText({
 			model,
 			messages: [
@@ -42,6 +67,8 @@ maybeDescribe("copilot provider integration", () => {
 	});
 
 	test("generateText with Output.object returns parsed object", async () => {
+		const model = getHttpModel();
+
 		const schema = z.object({
 			language: z.string(),
 		});
@@ -56,6 +83,8 @@ maybeDescribe("copilot provider integration", () => {
 	});
 
 	test("streamText streams and completes", async () => {
+		const model = getHttpModel();
+
 		const result = streamText({
 			model,
 			prompt: "Count from 1 to 3 in one line.",
@@ -70,6 +99,8 @@ maybeDescribe("copilot provider integration", () => {
 	});
 
 	test("generateText with tools exposes compatibility warning", async () => {
+		const model = getHttpModel();
+
 		const result = await generateText({
 			model,
 			prompt: "Use the lookupWeather tool to get weather for Paris.",
@@ -95,6 +126,8 @@ maybeDescribe("copilot provider integration", () => {
 	});
 
 	test("ToolLoopAgent generate smoke test", async () => {
+		const model = getHttpModel();
+
 		const agent = new ToolLoopAgent({
 			model,
 			tools: {

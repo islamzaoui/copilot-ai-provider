@@ -1,7 +1,7 @@
 import { type LanguageModelV3, NoSuchModelError, type ProviderV3 } from "@ai-sdk/provider";
-import { DEFAULT_MODEL_ID, DEFAULT_PROVIDER_ID } from "../core/constants.js";
-import type { CopilotHttpOptions, CopilotProvider } from "../core/types.js";
-import { CopilotHttpLanguageModel } from "../model/CopilotHttpLanguageModel.js";
+import { DEFAULT_MODEL_ID, DEFAULT_PROVIDER_ID } from "../../lib/constants.js";
+import type { CopilotHttpOptions, CopilotProvider } from "../../lib/types.js";
+import { CopilotHttpLanguageModel } from "./CopilotHttpLanguageModel.js";
 
 export type CopilotHttpProviderOptions = {
 	providerId?: string;

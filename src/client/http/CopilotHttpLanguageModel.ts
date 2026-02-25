@@ -8,18 +8,18 @@ import type {
 	LanguageModelV3Usage,
 } from "@ai-sdk/provider";
 import type { SessionConfig, SessionEvent } from "@github/copilot-sdk";
-import type { CopilotHttpOptions } from "../core/types.js";
-import { mapAssistantMessageToContent } from "./content.js";
 import type {
 	CopilotHttpGenerateRequest,
 	CopilotHttpGenerateResponse,
 	CopilotHttpSessionConfig,
-} from "./http-contract.js";
-import { getCopilotCallOptions } from "./options.js";
-import { promptToString } from "./prompt.js";
-import { handleStreamEvent } from "./stream-events.js";
-import { normalizeUsage } from "./usage.js";
-import { getWarnings } from "./warnings.js";
+} from "../../lib/http-contract.js";
+import type { CopilotHttpOptions } from "../../lib/types.js";
+import { normalizeUsage } from "../../lib/usage.js";
+import { mapAssistantMessageToContent } from "../content.js";
+import { getCopilotCallOptions } from "../options.js";
+import { promptToString } from "../prompt.js";
+import { handleStreamEvent } from "../stream-events.js";
+import { getWarnings } from "../warnings.js";
 
 export class CopilotHttpLanguageModel implements LanguageModelV3 {
 	readonly specificationVersion = "v3" as const;

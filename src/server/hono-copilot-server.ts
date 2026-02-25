@@ -4,8 +4,8 @@ import { streamSSE } from "hono/streaming";
 import type {
 	CopilotHttpGenerateRequest,
 	CopilotHttpGenerateResponse,
-} from "../model/http-contract.js";
-import { mergeUsageFromEvent, normalizeUsage } from "../model/usage.js";
+} from "../lib/http-contract.js";
+import { mergeUsageFromEvent, normalizeUsage } from "../lib/usage.js";
 
 export type CopilotHonoServerOptions = {
 	apiKey?: string;

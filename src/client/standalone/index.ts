@@ -1,32 +1,16 @@
 import { type LanguageModelV3, NoSuchModelError, type ProviderV3 } from "@ai-sdk/provider";
-import { DEFAULT_MODEL_ID, DEFAULT_PROVIDER_ID } from "./core/constants.js";
-import type { CopilotProvider, CopilotProviderOptions } from "./core/types.js";
-import { CopilotHttpLanguageModel } from "./model/CopilotHttpLanguageModel.js";
-import { CopilotLanguageModel } from "./model/CopilotLanguageModel.js";
+import { DEFAULT_MODEL_ID, DEFAULT_PROVIDER_ID } from "../../lib/constants.js";
+import type { CopilotProvider, CopilotProviderOptions } from "../../lib/types.js";
+import { CopilotLanguageModel } from "./CopilotLanguageModel.js";
 
-export type { CopilotProvider, CopilotProviderOptions } from "./core/types.js";
+export type { CopilotProvider, CopilotProviderOptions } from "../../lib/types.js";
 
-export function createCopilotProvider(options: CopilotProviderOptions = {}): ProviderV3 {
+export function createCopilotStandaloneProvider(options: CopilotProviderOptions = {}): ProviderV3 {
 	const providerId = options.providerId ?? DEFAULT_PROVIDER_ID;
 
 	return {
 		specificationVersion: "v3",
 		languageModel(modelId: string) {
-			const useHttp = options.transport === "http" || !!options.http?.baseUrl;
-
-			if (useHttp) {
-				if (!options.http?.baseUrl) {
-					throw new Error("Copilot HTTP transport requires options.http.baseUrl.");
-				}
-
-				return new CopilotHttpLanguageModel({
-					providerId,
-					modelId,
-					httpOptions: options.http,
-					sessionConfig: options.sessionConfig,
-				});
-			}
-
 			return new CopilotLanguageModel({
 				providerId,
 				modelId,
@@ -51,8 +35,8 @@ export function createCopilotProvider(options: CopilotProviderOptions = {}): Pro
 	};
 }
 
-export function createCopilot(options: CopilotProviderOptions = {}): CopilotProvider {
-	const provider = createCopilotProvider(options);
+export function createCopilotStandalone(options: CopilotProviderOptions = {}): CopilotProvider {
+	const provider = createCopilotStandaloneProvider(options);
 
 	const callable = Object.assign((modelId = DEFAULT_MODEL_ID) => {
 		return provider.languageModel(modelId);
@@ -61,9 +45,9 @@ export function createCopilot(options: CopilotProviderOptions = {}): CopilotProv
 	return callable;
 }
 
-export function copilot(
+export function copilotStandalone(
 	modelId = DEFAULT_MODEL_ID,
 	options?: CopilotProviderOptions
 ): LanguageModelV3 {
-	return createCopilot(options)(modelId);
+	return createCopilotStandalone(options)(modelId);
 }

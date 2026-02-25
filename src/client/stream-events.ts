@@ -1,7 +1,7 @@
 import type { LanguageModelV3StreamPart, LanguageModelV3Usage } from "@ai-sdk/provider";
 import type { SessionEvent } from "@github/copilot-sdk";
+import { mergeUsageFromEvent } from "../lib/usage.js";
 import { safeJSONStringify } from "./json.js";
-import { mergeUsageFromEvent } from "./usage.js";
 
 type StreamState = {
 	textStarted: boolean;

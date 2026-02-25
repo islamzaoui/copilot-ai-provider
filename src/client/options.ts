@@ -1,6 +1,6 @@
 import type { LanguageModelV3CallOptions } from "@ai-sdk/provider";
 import type { SessionConfig } from "@github/copilot-sdk";
-import type { CopilotCallOptions } from "../core/types.js";
+import type { CopilotCallOptions } from "../lib/types.js";
 
 export function getCopilotCallOptions(options: LanguageModelV3CallOptions): CopilotCallOptions {
 	const fromProvider = options.providerOptions?.copilot;
