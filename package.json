@@ -3,15 +3,24 @@
 	"module": "src/index.ts",
 	"type": "module",
 	"scripts": {
+		"start": "bun src/index.ts",
 		"typecheck": "tsc --noEmit",
 		"lint": "biome check",
 		"lint:fix": "biome check --write"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.4.4",
-		"@types/bun": "latest"
+		"@types/bun": "latest",
+		"tsx": "^4.21.0"
 	},
 	"peerDependencies": {
 		"typescript": "^5"
+	},
+	"dependencies": {
+		"@ai-sdk/provider": "^3.0.8",
+		"@github/copilot-sdk": "^0.1.26",
+		"@types/node": "^25.3.0",
+		"ai": "^6.0.99",
+		"zod": "^4.3.6"
 	}
 }
