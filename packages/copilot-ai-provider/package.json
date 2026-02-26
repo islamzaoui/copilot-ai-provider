@@ -1,7 +1,7 @@
 {
 	"name": "copilot-ai-provider",
 	"description": "A custom ai-sdk provider for the GitHub Copilot",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"license": "MIT",
 	"type": "module",
 	"scripts": {
