@@ -1,0 +1,1 @@
+./packages/copilot-ai-provider/LICENSE.md

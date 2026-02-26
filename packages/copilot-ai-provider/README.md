@@ -10,7 +10,7 @@ Use it in two ways:
 ## Install
 
 ```bash
-bun add copilot-ai-provider ai @github/copilot-sdk
+bun add copilot-ai-provider
 ```
 
 ## Quick Start (Standalone)

@@ -9,7 +9,6 @@
 	},
 	"dependencies": {
 		"@ai-sdk/react": "^3.0.103",
-		"@github/copilot-sdk": "catalog:",
 		"ai": "catalog:",
 		"copilot-ai-provider": "workspace:*",
 		"next": "16.1.6",
