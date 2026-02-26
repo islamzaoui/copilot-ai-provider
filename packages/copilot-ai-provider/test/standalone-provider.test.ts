@@ -7,7 +7,17 @@ import {
 	createCopilotStandaloneProvider,
 } from "../src/client/standalone/index.js";
 
-describe("createCopilotStandaloneProvider", () => {
+setDefaultTimeout(120_000);
+
+process.env.AI_SDK_LOG_WARNINGS = "true";
+
+const modelId = process.env.TEST_COPILOT_MODEL ?? "gpt-4.1";
+const githubToken = process.env.GITHUB_TOKEN;
+const model = copilotStandalone(modelId, {
+	clientOptions: githubToken ? { githubToken } : undefined,
+});
+
+describe("copilot standalone integration", () => {
 	test("embeddingModel throws NoSuchModelError", () => {
 		const provider = createCopilotStandaloneProvider();
 
@@ -19,19 +29,7 @@ describe("createCopilotStandaloneProvider", () => {
 
 		expect(() => provider.imageModel("image-model")).toThrow(NoSuchModelError);
 	});
-});
 
-const shouldRunCopilotIntegration = process.env.COPILOT_INTEGRATION !== "0";
-const maybeDescribe = shouldRunCopilotIntegration ? describe : describe.skip;
-const modelId = process.env.COPILOT_MODEL ?? "gpt-4.1";
-const githubToken = process.env.GITHUB_TOKEN;
-const model = copilotStandalone(modelId, {
-	clientOptions: githubToken ? { githubToken } : undefined,
-});
-
-setDefaultTimeout(120_000);
-
-maybeDescribe("copilot standalone integration", () => {
 	test("generateText with system + prompt", async () => {
 		const result = await generateText({
 			model,

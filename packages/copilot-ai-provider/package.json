@@ -1,0 +1,46 @@
+{
+	"name": "copilot-ai-provider",
+	"description": "A custom ai-sdk provider for the GitHub Copilot",
+	"version": "0.1.0",
+	"license": "MIT",
+	"type": "module",
+	"module": "./dist/server/index.js",
+	"scripts": {
+		"dev": "bunup --watch",
+		"build": "bunup",
+		"start": "bun dist/server/index.js",
+		"typecheck": "tsc --noEmit",
+		"test": "bun test ./test"
+	},
+	"dependencies": {
+		"@ai-sdk/provider": "3.0.8",
+		"@github/copilot-sdk": "0.1.26"
+	},
+	"devDependencies": {
+		"bunup": "0.16.29",
+		"hono": "4.8.3",
+		"zod": "4.3.6"
+	},
+	"peerDependencies": {
+		"typescript": "^5",
+		"ai": "catalog:"
+	},
+	"exports": {
+		"./client/http": {
+			"import": "./dist/client/http/index.js",
+			"types": "./dist/client/http/index.d.ts"
+		},
+		"./client/standalone": {
+			"import": "./dist/client/standalone/index.js",
+			"types": "./dist/client/standalone/index.d.ts"
+		},
+		"./server": {
+			"import": "./dist/server/index.js"
+		}
+	},
+	"files": [
+		"dist",
+		"package.json",
+		"README.md"
+	]
+}

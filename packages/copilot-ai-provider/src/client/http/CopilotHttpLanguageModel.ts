@@ -50,12 +50,9 @@ export class CopilotHttpLanguageModel implements LanguageModelV3 {
 	private getHeaders(): Record<string, string> {
 		const headers: Record<string, string> = {
 			"content-type": "application/json",
+			authorization: `Bearer ${this.httpOptions.apiKey}`,
 			...this.httpOptions.headers,
 		};
-
-		if (this.httpOptions.apiKey) {
-			headers.authorization = `Bearer ${this.httpOptions.apiKey}`;
-		}
 
 		return headers;
 	}

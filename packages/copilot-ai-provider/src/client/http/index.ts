@@ -58,11 +58,7 @@ export function createCopilotHttp(options: CopilotHttpProviderOptions): CopilotP
 
 export function copilotHttp(
 	modelId: string = DEFAULT_MODEL_ID,
-	options?: CopilotHttpProviderOptions
+	options: CopilotHttpProviderOptions
 ) {
-	if (!options) {
-		throw new Error("copilotHttp requires options with an HTTP backend configuration.");
-	}
-
 	return createCopilotHttp(options)(modelId) as LanguageModelV3;
 }

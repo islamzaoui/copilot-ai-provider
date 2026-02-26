@@ -9,7 +9,6 @@ export default defineConfig([
 		format: "esm",
 		dts: true,
 		clean: true,
-		exports: true,
 	},
 	{
 		name: "copilot-ai-provider-client-standalone",
@@ -19,7 +18,6 @@ export default defineConfig([
 		format: "esm",
 		dts: true,
 		clean: true,
-		exports: true,
 	},
 	{
 		name: "copilot-ai-provider-server",
@@ -29,6 +27,5 @@ export default defineConfig([
 		format: "esm",
 		dts: false,
 		clean: true,
-		exports: true,
 	},
 ]);

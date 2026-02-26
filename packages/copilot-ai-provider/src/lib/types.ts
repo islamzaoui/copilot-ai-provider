@@ -3,7 +3,7 @@ import type { CopilotClientOptions, SessionConfig } from "@github/copilot-sdk";
 
 export type CopilotHttpOptions = {
 	baseUrl: string;
-	apiKey?: string;
+	apiKey: string;
 	headers?: Record<string, string>;
 };
 

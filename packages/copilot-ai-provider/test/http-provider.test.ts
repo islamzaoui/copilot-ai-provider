@@ -1,43 +1,41 @@
 import { describe, expect, setDefaultTimeout, test } from "bun:test";
 import { generateText, Output, stepCountIs, streamText, ToolLoopAgent, tool } from "ai";
 import { z } from "zod";
-import { copilotHttp, createCopilotHttpProvider } from "../src/client/http/index.js";
-
-describe("createCopilotHttpProvider", () => {
-	test("creates an HTTP language model", () => {
-		const provider = createCopilotHttpProvider({
-			http: {
-				baseUrl: "http://localhost:3000",
-			},
-		});
-
-		expect(() => provider.languageModel("gpt-4.1")).not.toThrow();
-	});
-});
-
-const shouldRunCopilotIntegration = process.env.COPILOT_INTEGRATION !== "0";
-const modelId = process.env.COPILOT_MODEL ?? "gpt-4.1";
-const httpBaseUrl = process.env.COPILOT_HTTP_BASE_URL;
-const maybeDescribe = shouldRunCopilotIntegration && httpBaseUrl ? describe : describe.skip;
-
-function getHttpModel() {
-	if (!httpBaseUrl) {
-		throw new Error("HTTP model is not configured for integration tests.");
-	}
-
-	return copilotHttp(modelId, {
-		http: {
-			baseUrl: httpBaseUrl,
-			apiKey: process.env.API_KEY,
-		},
-	});
-}
+import { createCopilotHttpProvider } from "../src/client/http";
+import { getHttpModel, isServerOnline } from "./helper";
 
 setDefaultTimeout(120_000);
 
+process.env.AI_SDK_LOG_WARNINGS = "true";
+
+const httpBaseUrl = `http://localhost:${process.env.PORT ?? "3000"}`;
+const modelId = process.env.TEST_COPILOT_MODEL ?? "gpt-4.1";
+const apiKey = process.env.API_KEY;
+
+if (!apiKey) {
+	throw new Error(
+		"API_KEY environment variable is required to run copilot HTTP integration tests."
+	);
+}
+
+const maybeDescribe = await isServerOnline(httpBaseUrl, apiKey).then((isOnline) => {
+	return isOnline ? describe : describe.skip;
+});
+
 maybeDescribe("copilot http integration", () => {
+	test("creates an HTTP language model", () => {
+		const provider = createCopilotHttpProvider({
+			http: {
+				baseUrl: httpBaseUrl,
+				apiKey: apiKey,
+			},
+		});
+
+		expect(() => provider.languageModel(modelId)).not.toThrow();
+	});
+
 	test("generateText with system + prompt", async () => {
-		const model = getHttpModel();
+		const model = getHttpModel(httpBaseUrl, modelId, apiKey);
 
 		const result = await generateText({
 			model,
@@ -51,7 +49,7 @@ maybeDescribe("copilot http integration", () => {
 	});
 
 	test("generateText with messages", async () => {
-		const model = getHttpModel();
+		const model = getHttpModel(httpBaseUrl, modelId, apiKey);
 
 		const result = await generateText({
 			model,
@@ -67,7 +65,7 @@ maybeDescribe("copilot http integration", () => {
 	});
 
 	test("generateText with Output.object returns parsed object", async () => {
-		const model = getHttpModel();
+		const model = getHttpModel(httpBaseUrl, modelId, apiKey);
 
 		const schema = z.object({
 			language: z.string(),
@@ -83,7 +81,7 @@ maybeDescribe("copilot http integration", () => {
 	});
 
 	test("streamText streams and completes", async () => {
-		const model = getHttpModel();
+		const model = getHttpModel(httpBaseUrl, modelId, apiKey);
 
 		const result = streamText({
 			model,
@@ -99,7 +97,7 @@ maybeDescribe("copilot http integration", () => {
 	});
 
 	test("generateText with tools exposes compatibility warning", async () => {
-		const model = getHttpModel();
+		const model = getHttpModel(httpBaseUrl, modelId, apiKey);
 
 		const result = await generateText({
 			model,
@@ -126,7 +124,7 @@ maybeDescribe("copilot http integration", () => {
 	});
 
 	test("ToolLoopAgent generate smoke test", async () => {
-		const model = getHttpModel();
+		const model = getHttpModel(httpBaseUrl, modelId, apiKey);
 
 		const agent = new ToolLoopAgent({
 			model,
