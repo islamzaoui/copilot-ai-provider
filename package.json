@@ -21,6 +21,9 @@
 		"lint-staged": "16.2.7",
 		"turbo": "2.8.11"
 	},
+	"engines": {
+		"node": ">=22"
+	},
 	"workspaces": {
 		"packages": [
 			"packages/*",

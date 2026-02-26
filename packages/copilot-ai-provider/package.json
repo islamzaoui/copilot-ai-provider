@@ -25,13 +25,9 @@
 		"@github/copilot-sdk": "catalog:"
 	},
 	"exports": {
-		"./client/http": {
-			"import": "./dist/client/http/index.js",
-			"types": "./dist/client/http/index.d.ts"
-		},
-		"./client/standalone": {
-			"import": "./dist/client/standalone/index.js",
-			"types": "./dist/client/standalone/index.d.ts"
+		"./client/*": {
+			"import": "./dist/client/*/index.js",
+			"types": "./dist/client/*/index.d.ts"
 		},
 		"./server": {
 			"import": "./dist/server/index.js"
