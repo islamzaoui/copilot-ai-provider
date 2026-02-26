@@ -1,5 +1,11 @@
 # copilot-ai-provider
 
+## 0.3.3
+
+### Patch Changes
+
+- 63e4352: remove catalog
+
 ## 0.3.2
 
 ### Patch Changes
