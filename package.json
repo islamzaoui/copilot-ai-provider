@@ -10,7 +10,8 @@
 		"typecheck": "turbo typecheck",
 		"test": "turbo test",
 		"lint": "biome check",
-		"lint:fix": "biome check --write"
+		"lint:fix": "biome check --write",
+		"publish": "bun run build && bun changeset publish"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.4",
