@@ -25,16 +25,10 @@
 	"engines": {
 		"node": ">=22"
 	},
-	"workspaces": {
-		"packages": [
-			"packages/*",
-			"examples/*"
-		],
-		"catalog": {
-			"ai": "^6",
-			"@github/copilot-sdk": "0.1.26"
-		}
-	},
+	"workspaces": [
+		"packages/*",
+		"examples/*"
+	],
 	"lint-staged": {
 		"*": "biome check --write"
 	}

@@ -18,8 +18,7 @@
       "name": "standalone",
       "dependencies": {
         "@ai-sdk/react": "^3.0.103",
-        "@github/copilot-sdk": "catalog:",
-        "ai": "catalog:",
+        "ai": "^6",
         "copilot-ai-provider": "workspace:*",
         "next": "16.1.6",
         "react": "19.2.3",
@@ -37,22 +36,22 @@
     },
     "packages/copilot-ai-provider": {
       "name": "copilot-ai-provider",
-      "version": "0.2.0",
+      "version": "0.3.1",
       "bin": {
-        "copilot-ai-provider": "./dist/server/cli.js",
+        "copilot-ai-provider": "./dist/server/cli/index.js",
       },
       "dependencies": {
         "@ai-sdk/provider": "3.0.8",
-      },
-      "devDependencies": {
+        "@github/copilot-sdk": "0.1.26",
         "@hono/node-server": "^1.19.9",
-        "bunup": "0.16.29",
+        "ai": "^6",
         "hono": "4.8.3",
         "zod": "4.3.6",
       },
+      "devDependencies": {
+        "bunup": "0.16.29",
+      },
       "peerDependencies": {
-        "@github/copilot-sdk": "catalog:",
-        "ai": "catalog:",
         "typescript": "^5",
       },
     },
@@ -60,10 +59,6 @@
   "trustedDependencies": [
     "sharp",
   ],
-  "catalog": {
-    "@github/copilot-sdk": "0.1.26",
-    "ai": "^6",
-  },
   "packages": {
     "@ai-sdk/gateway": ["@ai-sdk/gateway@3.0.55", "", { "dependencies": { "@ai-sdk/provider": "3.0.8", "@ai-sdk/provider-utils": "4.0.15", "@vercel/oidc": "3.1.0" }, "peerDependencies": { "zod": "^3.25.76 || ^4.1.8" } }, "sha512-7xMeTJnCjwRwXKVCiv4Ly4qzWvDuW3+W1WIV0X1EFu6W83d4mEhV9bFArto10MeTw40ewuDjrbrZd21mXKohkw=="],
 
