@@ -1,5 +1,11 @@
 # copilot-ai-provider
 
+## 0.3.1
+
+### Patch Changes
+
+- 2e72018: add shebang line to cli
+
 ## 0.3.0
 
 ### Minor Changes
