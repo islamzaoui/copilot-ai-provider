@@ -280,7 +280,16 @@ type SSEEvent = {
 	data: string;
 };
 
-async function* iterateSSEEvents(stream: ReadableStream<Uint8Array>): AsyncGenerator<SSEEvent> {
+type Uint8ArrayReader = {
+	read(): Promise<{ done: boolean; value?: Uint8Array }>;
+	releaseLock(): void;
+};
+
+type Uint8ArrayReadableStream = {
+	getReader(): Uint8ArrayReader;
+};
+
+async function* iterateSSEEvents(stream: Uint8ArrayReadableStream): AsyncGenerator<SSEEvent> {
 	const decoder = new TextDecoder();
 	const reader = stream.getReader();
 	let buffer = "";
@@ -290,6 +299,10 @@ async function* iterateSSEEvents(stream: ReadableStream<Uint8Array>): AsyncGener
 			const { done, value } = await reader.read();
 			if (done) {
 				break;
+			}
+
+			if (!value) {
+				continue;
 			}
 
 			buffer += decoder.decode(value, { stream: true });
