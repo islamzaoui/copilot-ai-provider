@@ -7,17 +7,18 @@
 	"scripts": {
 		"dev": "bunup --watch",
 		"build": "bunup",
-		"start": "bun dist/server/index.js",
+		"start": "bun dist/server/cli/index.js",
 		"typecheck": "tsc --noEmit",
 		"test": "bun test ./test"
 	},
 	"dependencies": {
-		"@ai-sdk/provider": "3.0.8"
-	},
-	"devDependencies": {
-		"bunup": "0.16.29",
+		"@ai-sdk/provider": "3.0.8",
+		"@hono/node-server": "^1.19.9",
 		"hono": "4.8.3",
 		"zod": "4.3.6"
+	},
+	"devDependencies": {
+		"bunup": "0.16.29"
 	},
 	"peerDependencies": {
 		"typescript": "^5",
@@ -34,7 +35,7 @@
 		}
 	},
 	"bin": {
-		"copilot-ai-provider": "./dist/server/index.js"
+		"copilot-ai-provider": "./dist/server/cli/index.js"
 	},
 	"files": [
 		"dist",

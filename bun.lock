@@ -37,14 +37,15 @@
     },
     "packages/copilot-ai-provider": {
       "name": "copilot-ai-provider",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "bin": {
-        "copilot-ai-provider": "./dist/server/index.js",
+        "copilot-ai-provider": "./dist/server/cli.js",
       },
       "dependencies": {
         "@ai-sdk/provider": "3.0.8",
       },
       "devDependencies": {
+        "@hono/node-server": "^1.19.9",
         "bunup": "0.16.29",
         "hono": "4.8.3",
         "zod": "4.3.6",
@@ -161,6 +162,8 @@
     "@github/copilot-win32-arm64": ["@github/copilot-win32-arm64@0.0.414", "", { "os": "win32", "cpu": "arm64", "bin": { "copilot-win32-arm64": "copilot.exe" } }, "sha512-8gdaoF4MPpeV0h8UnCZ8TKI5l274EP0fvAaV9BGjsdyEydDcEb+DHqQiXgitWVKKiHAAaPi12aH8P5OsEDUneQ=="],
 
     "@github/copilot-win32-x64": ["@github/copilot-win32-x64@0.0.414", "", { "os": "win32", "cpu": "x64", "bin": { "copilot-win32-x64": "copilot.exe" } }, "sha512-E1Oq1jXHaL1oWNsmmiCd4G30/CfgVdswg/T5oDFUxx3Ri+6uBekciIzdyCDelsP1kn2+fC1EYz2AerQ6F+huzg=="],
+
+    "@hono/node-server": ["@hono/node-server@1.19.9", "", { "peerDependencies": { "hono": "^4" } }, "sha512-vHL6w3ecZsky+8P5MD+eFfaGTyCeOHUIFYMGpQGbrBTSmNNoxv0if69rEZ5giu36weC5saFuznL411gRX7bJDw=="],
 
     "@img/colour": ["@img/colour@1.0.0", "", {}, "sha512-A5P/LfWGFSl6nsckYtjw9da+19jB8hkJ6ACTGcDfEJ0aE+l2n2El7dsVM7UVHZQ9s2lmYMWlrS21YLy2IR1LUw=="],
 

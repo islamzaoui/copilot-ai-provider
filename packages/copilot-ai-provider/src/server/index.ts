@@ -4,7 +4,7 @@ import { logger } from "hono/logger";
 import { env } from "./env";
 import { indexRoute } from "./routes/index.route";
 
-export default new Hono()
+const app: Hono = new Hono()
 	.use(logger())
 	.use(
 		"*",
@@ -13,3 +13,5 @@ export default new Hono()
 		})
 	)
 	.route("/", indexRoute);
+
+export default app;
