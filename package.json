@@ -19,10 +19,12 @@
 	},
 	"workspaces": {
 		"packages": [
-			"packages/*"
+			"packages/*",
+			"examples/*"
 		],
 		"catalog": {
-			"ai": "^6"
+			"ai": "^6",
+			"@github/copilot-sdk": "0.1.26"
 		}
 	}
 }

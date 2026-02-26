@@ -4,7 +4,6 @@
 	"version": "0.1.0",
 	"license": "MIT",
 	"type": "module",
-	"module": "./dist/server/index.js",
 	"scripts": {
 		"dev": "bunup --watch",
 		"build": "bunup",
@@ -13,8 +12,7 @@
 		"test": "bun test ./test"
 	},
 	"dependencies": {
-		"@ai-sdk/provider": "3.0.8",
-		"@github/copilot-sdk": "0.1.26"
+		"@ai-sdk/provider": "3.0.8"
 	},
 	"devDependencies": {
 		"bunup": "0.16.29",
@@ -23,7 +21,8 @@
 	},
 	"peerDependencies": {
 		"typescript": "^5",
-		"ai": "catalog:"
+		"ai": "catalog:",
+		"@github/copilot-sdk": "catalog:"
 	},
 	"exports": {
 		"./client/http": {
@@ -37,6 +36,9 @@
 		"./server": {
 			"import": "./dist/server/index.js"
 		}
+	},
+	"bin": {
+		"copilot-ai-provider": "./dist/server/index.js"
 	},
 	"files": [
 		"dist",
