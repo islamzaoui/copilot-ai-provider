@@ -46,7 +46,7 @@ export function createCopilotStandalone(options: CopilotProviderOptions = {}): C
 }
 
 export function copilotStandalone(
-	modelId = DEFAULT_MODEL_ID,
+	modelId: string = DEFAULT_MODEL_ID,
 	options?: CopilotProviderOptions
 ): LanguageModelV3 {
 	return createCopilotStandalone(options)(modelId);

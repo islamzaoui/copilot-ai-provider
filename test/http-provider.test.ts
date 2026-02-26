@@ -7,7 +7,7 @@ describe("createCopilotHttpProvider", () => {
 	test("creates an HTTP language model", () => {
 		const provider = createCopilotHttpProvider({
 			http: {
-				baseUrl: "http://localhost:8787",
+				baseUrl: "http://localhost:3000",
 			},
 		});
 
@@ -28,7 +28,7 @@ function getHttpModel() {
 	return copilotHttp(modelId, {
 		http: {
 			baseUrl: httpBaseUrl,
-			apiKey: process.env.COPILOT_HTTP_API_KEY,
+			apiKey: process.env.API_KEY,
 		},
 	});
 }

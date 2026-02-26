@@ -56,7 +56,10 @@ export function createCopilotHttp(options: CopilotHttpProviderOptions): CopilotP
 	return callable;
 }
 
-export function copilotHttp(modelId = DEFAULT_MODEL_ID, options?: CopilotHttpProviderOptions) {
+export function copilotHttp(
+	modelId: string = DEFAULT_MODEL_ID,
+	options?: CopilotHttpProviderOptions
+) {
 	if (!options) {
 		throw new Error("copilotHttp requires options with an HTTP backend configuration.");
 	}

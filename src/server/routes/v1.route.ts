@@ -1,61 +1,12 @@
-import { CopilotClient, type CopilotClientOptions, type SessionConfig } from "@github/copilot-sdk";
+import type { CopilotClient } from "@github/copilot-sdk";
 import { Hono } from "hono";
 import { streamSSE } from "hono/streaming";
-import type {
-	CopilotHttpGenerateRequest,
-	CopilotHttpGenerateResponse,
-} from "../lib/http-contract.js";
-import { mergeUsageFromEvent, normalizeUsage } from "../lib/usage.js";
+import type { CopilotHttpGenerateRequest, CopilotHttpGenerateResponse } from "@/lib/http-contract";
+import { mergeUsageFromEvent, normalizeUsage } from "@/lib/usage";
+import { getClient } from "@/server/copilot";
 
-export type CopilotHonoServerOptions = {
-	apiKey?: string;
-	clientOptions?: CopilotClientOptions;
-	sessionConfig?: Omit<SessionConfig, "model" | "streaming">;
-};
-
-export function createCopilotHonoServer(options: CopilotHonoServerOptions = {}) {
-	const app = new Hono();
-
-	let client: CopilotClient | undefined;
-	let clientStartPromise: Promise<CopilotClient> | undefined;
-
-	const getClient = async (): Promise<CopilotClient> => {
-		if (client) {
-			return client;
-		}
-
-		if (!clientStartPromise) {
-			clientStartPromise = (async () => {
-				const started = new CopilotClient(options.clientOptions);
-				await started.start();
-				client = started;
-				return started;
-			})();
-		}
-
-		try {
-			return await clientStartPromise;
-		} catch (error) {
-			clientStartPromise = undefined;
-			throw error;
-		}
-	};
-
-	app.use("*", async (c, next) => {
-		if (!options.apiKey) {
-			await next();
-			return;
-		}
-
-		const authHeader = c.req.header("authorization") ?? "";
-		if (authHeader !== `Bearer ${options.apiKey}`) {
-			return c.json({ error: "Unauthorized" }, 401);
-		}
-
-		await next();
-	});
-
-	app.post("/v1/generate", async (c) => {
+export const v1Route = new Hono()
+	.post("/generate", async (c) => {
 		const request = (await c.req.json()) as CopilotHttpGenerateRequest;
 		const usageAccumulator = {};
 		let latestTimestamp: string | undefined;
@@ -64,13 +15,11 @@ export function createCopilotHonoServer(options: CopilotHonoServerOptions = {}) 
 		try {
 			const startedClient = await getClient();
 			session = await startedClient.createSession({
-				...options.sessionConfig,
 				model: request.session.model,
 				streaming: false,
-				reasoningEffort: request.session.reasoningEffort ?? options.sessionConfig?.reasoningEffort,
-				workingDirectory:
-					request.session.workingDirectory ?? options.sessionConfig?.workingDirectory,
-				systemMessage: request.session.systemMessage ?? options.sessionConfig?.systemMessage,
+				reasoningEffort: request.session.reasoningEffort,
+				workingDirectory: request.session.workingDirectory,
+				systemMessage: request.session.systemMessage,
 			});
 
 			session.on((event) => {
@@ -107,9 +56,8 @@ export function createCopilotHonoServer(options: CopilotHonoServerOptions = {}) 
 				} catch {}
 			}
 		}
-	});
-
-	app.post("/v1/stream", async (c) => {
+	})
+	.post("/stream", async (c) => {
 		const request = (await c.req.json()) as CopilotHttpGenerateRequest;
 
 		return streamSSE(c, async (stream) => {
@@ -132,14 +80,11 @@ export function createCopilotHonoServer(options: CopilotHonoServerOptions = {}) 
 			try {
 				const startedClient = await getClient();
 				session = await startedClient.createSession({
-					...options.sessionConfig,
 					model: request.session.model,
 					streaming: true,
-					reasoningEffort:
-						request.session.reasoningEffort ?? options.sessionConfig?.reasoningEffort,
-					workingDirectory:
-						request.session.workingDirectory ?? options.sessionConfig?.workingDirectory,
-					systemMessage: request.session.systemMessage ?? options.sessionConfig?.systemMessage,
+					reasoningEffort: request.session.reasoningEffort,
+					workingDirectory: request.session.workingDirectory,
+					systemMessage: request.session.systemMessage,
 				});
 
 				const finishPromise = new Promise<void>((resolve) => {
@@ -186,6 +131,3 @@ export function createCopilotHonoServer(options: CopilotHonoServerOptions = {}) 
 			}
 		});
 	});
-
-	return app;
-}
