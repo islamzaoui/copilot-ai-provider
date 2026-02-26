@@ -1,4 +1,4 @@
-import { copilotHttp } from "../src/client/http";
+import { copilotHttp } from "../dist/client/http";
 
 export async function isServerOnline(baseUrl: string, apiKey: string): Promise<boolean> {
 	return fetch(`${baseUrl}/ping`, {

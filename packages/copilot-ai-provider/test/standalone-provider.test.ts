@@ -2,10 +2,7 @@ import { describe, expect, setDefaultTimeout, test } from "bun:test";
 import { NoSuchModelError } from "@ai-sdk/provider";
 import { generateText, Output, stepCountIs, streamText, ToolLoopAgent, tool } from "ai";
 import { z } from "zod";
-import {
-	copilotStandalone,
-	createCopilotStandaloneProvider,
-} from "../src/client/standalone/index.js";
+import { copilotStandalone, createCopilotStandaloneProvider } from "../dist/client/standalone";
 
 setDefaultTimeout(120_000);
 

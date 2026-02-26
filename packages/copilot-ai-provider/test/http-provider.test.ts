@@ -1,7 +1,7 @@
 import { describe, expect, setDefaultTimeout, test } from "bun:test";
 import { generateText, Output, stepCountIs, streamText, ToolLoopAgent, tool } from "ai";
 import { z } from "zod";
-import { createCopilotHttpProvider } from "../src/client/http";
+import { createCopilotHttpProvider } from "../dist/client/http";
 import { getHttpModel, isServerOnline } from "./helper";
 
 setDefaultTimeout(120_000);
